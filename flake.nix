@@ -16,6 +16,7 @@
       });
     });
     in {
+      packages.reactive-monitor = hp.reactive-monitor;
       devShell = hp.shellFor {
         packages = h: [h.reactive-monitor];
         withHoogle = false;
