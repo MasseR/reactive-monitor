@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NumericUnderscores #-}
+{-# LANGUAGE DeriveGeneric #-}
 module Stream where
 
 import Control.Arrow
@@ -14,13 +15,10 @@ import Data.Time (getCurrentTime)
 import Prelude hiding (id)
 import Control.Category (id)
 import qualified Data.Text.IO as TI
+import GHC.Generics (Generic)
+import Data.Binary (Binary)
+import Data.StreamEvent (StreamEvent(..))
 
-data StreamEvent
-  = StreamEvent { evType :: Text
-                , evContent :: Text
-                , evTime :: Double
-                }
-  deriving Show
 
 data StreamEff a where
   NoEffect :: StreamEff ()

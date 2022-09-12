@@ -13,12 +13,14 @@
         hp = nixpkgs.legacyPackages.${system}.haskellPackages.override (old: {
       overrides = pkgs.lib.composeExtensions (old.overrides or (_: _: {})) (f: p: rec {
         reactive-monitor = f.callPackage ./reactive-monitor {};
+        reactive-monitor-client = f.callPackage ./reactive-monitor-client {};
+        reactive-monitor-common = f.callPackage ./reactive-monitor-common {};
       });
     });
     in {
       packages.reactive-monitor = hp.reactive-monitor;
       devShell = hp.shellFor {
-        packages = h: [h.reactive-monitor];
+        packages = h: [h.reactive-monitor h.reactive-monitor-client h.reactive-monitor-common];
         withHoogle = false;
         buildInputs = with pkgs; [
           cabal-install

@@ -1,0 +1,44 @@
+cabal-version:      3.0
+name:               reactive-monitor-common
+version:            0.1.0.0
+-- synopsis:
+-- description:
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Mats Rauhala
+maintainer:         mats.rauhala@iki.fi
+-- copyright:
+category:           Web
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+-- extra-source-files:
+
+common warnings
+    ghc-options: -Wall
+
+library
+    import:           warnings
+    exposed-modules:  Data.Word.Encoding
+                      Data.StreamEvent
+    -- other-modules:
+    -- other-extensions:
+    build-depends:    base ^>=4.15.1.0
+                    , binary
+                    , text
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+test-suite reactive-monitor-common-test
+    import:           warnings
+    default-language: Haskell2010
+    -- other-modules:
+    -- other-extensions:
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.15.1.0,
+        reactive-monitor-common,
+        hedgehog,
+        hspec,
+        hspec-hedgehog
