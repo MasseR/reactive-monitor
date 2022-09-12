@@ -12,7 +12,7 @@
     let pkgs = nixpkgs.legacyPackages.${system};
         hp = nixpkgs.legacyPackages.${system}.haskellPackages.override (old: {
       overrides = pkgs.lib.composeExtensions (old.overrides or (_: _: {})) (f: p: rec {
-        reactive-monitor = f.callPackage ./. {};
+        reactive-monitor = f.callPackage ./reactive-monitor {};
       });
     });
     in {
