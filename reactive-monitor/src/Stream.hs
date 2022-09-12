@@ -35,13 +35,13 @@ evalStreamEff = \case
 
 type Stream = Auto StreamEff
 
-run :: Chan StreamEvent -> Stream (Event StreamEvent) () -> IO ()
+run :: Chan (Event StreamEvent) -> Stream (Event StreamEvent) () -> IO ()
 run chan = go
   where
     go auto = do
-      a <- race (threadDelay 5_000_00) (readChan chan)
+      a <- readChan chan
       now <- getCurrentTime
-      (next, ()) <- runAuto auto evalStreamEff now (either (const NoEvent) Event a)
+      (next, ()) <- runAuto auto evalStreamEff now a
       go next
 
 whenE :: (a -> Bool) -> Auto eff (Event a) () -> Auto eff (Event a) ()

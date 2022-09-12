@@ -70,3 +70,4 @@ test-suite reactive-monitor-test
                     , reactive-monitor
                     , hspec-hedgehog
                     , hedgehog
+  ghc-options:      -threaded
