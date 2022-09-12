@@ -16,7 +16,7 @@ import Data.StreamEvent
 import Auto
 import Control.Concurrent (writeChan, newChan, readChan, threadDelay)
 import Control.Concurrent.Async (race_, mapConcurrently_)
-import Stream (run, printStream)
+import Stream (run, printStream, whenE)
 
 data ProtocolException
   = InvalidSize
@@ -32,7 +32,7 @@ someFunc = do
   runConcurrently
     [ server chan
     , timer chan
-    , run chan printStream
+    , run chan (whenE (\e -> evType e == "test") printStream)
     ]
   where
     timer chan = forever $ do
