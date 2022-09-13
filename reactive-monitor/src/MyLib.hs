@@ -3,20 +3,20 @@
 {-# LANGUAGE NumericUnderscores #-}
 module MyLib (someFunc) where
 import Network.Simple.TCP (serve, recv)
-import Data.Word (Word8, Word64, Word32)
 import Control.Exception.Annotated (checkpointCallStack, throw)
-import Data.Bits (shiftL, (.&.), shiftR)
 import qualified Data.ByteString as B
 import Data.Word.Encoding (toWord32)
-import Control.Monad ((<=<), forever)
+import Control.Monad (forever)
 import Control.Exception (Exception)
 import qualified Data.Binary as Binary
 import qualified Data.ByteString.Lazy as LB
 import Data.StreamEvent
 import Auto
-import Control.Concurrent (writeChan, newChan, readChan, threadDelay)
-import Control.Concurrent.Async (race_, mapConcurrently_)
+import Control.Concurrent (writeChan, newChan, threadDelay)
+import Control.Concurrent.Async (mapConcurrently_)
 import Stream (run, printStream, whenE)
+import qualified Data.Foldable as F
+import Control.Arrow ((>>>), arr)
 
 data ProtocolException
   = InvalidSize
@@ -32,7 +32,7 @@ someFunc = do
   runConcurrently
     [ server chan
     , timer chan
-    , run chan (whenE (\e -> evType e == "test") printStream)
+    , run chan (whenE (\e -> evType e == "test") (fixed 5 >>> arr length >>> arr (> 15) >>> edge >>> printStream))
     ]
   where
     timer chan = forever $ do
@@ -46,9 +46,9 @@ someFunc = do
            Nothing -> pure ()
            Just Nothing -> throw InvalidSize
            Just (Just size) -> do
-             x <- fmap (Binary.decodeOrFail @StreamEvent . LB.fromStrict) <$> recv conn (fromIntegral size)
+             x <- fmap (Binary.decodeOrFail @[StreamEvent] . LB.fromStrict) <$> recv conn (fromIntegral size)
              case x of
                   Nothing -> pure ()
                   Just (Left (_, _, err)) -> throw (InvalidEvent err)
-                  Just (Right (_, _, a)) -> do
-                    writeChan chan (Event a)
+                  Just (Right (_, _, xs)) -> do
+                    F.traverse_ (writeChan chan . Event) xs

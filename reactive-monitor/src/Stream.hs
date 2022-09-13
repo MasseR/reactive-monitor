@@ -1,22 +1,17 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE NumericUnderscores #-}
-{-# LANGUAGE DeriveGeneric #-}
 module Stream where
 
 import Control.Arrow
 import Auto
 import Data.Text (Text)
 import Data.Either (fromRight)
-import Control.Concurrent (Chan, threadDelay, readChan)
-import Control.Concurrent.Async (race)
+import Control.Concurrent (Chan, readChan)
 import Data.Time (getCurrentTime)
 import Prelude hiding (id)
 import Control.Category (id)
 import qualified Data.Text.IO as TI
-import GHC.Generics (Generic)
-import Data.Binary (Binary)
 import Data.StreamEvent (StreamEvent(..))
 
 
